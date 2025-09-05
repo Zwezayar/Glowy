@@ -18,9 +18,6 @@ if 'chat_history' not in st.session_state:
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {}
 
-# User-facing strings (for easy updates and localization)
-WELCOME_MESSAGE = '👋 Hi! I\'m your skincare AI assistant "Glowy". Ask me anything about skincare, routines, or our products!'
-
 # Skincare Knowledge Base (Replace with your NotebookLM Q&A data)
 SKINCARE_KB = {
     "acne": {
@@ -197,7 +194,7 @@ with col1:
             if st.session_state.chat_history:
                 display_chat()
             else:
-                st.info(WELCOME_MESSAGE)
+                st.info('👋 Hi! I\'m your skincare AI assistant "Glowy". Ask me anything about skincare, routines, or our products!')
         
         # Chat input
         user_input = st.chat_input("Ask me about skincare...")
