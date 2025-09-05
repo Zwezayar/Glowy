@@ -1,6 +1,7 @@
 # ✨The More You Glow By Ingyin - Virtual Assistant "Glowy"
 
-A simple Ai Assistant : Glowy 
+A simple Ai Assistant : " Glowy "
+
 Virtual Assistant Ai to answer the user questions base on the Skincare Knowledge 
 Glowy is under training level stage and she can be mistake or error depend on the prompt.
 Anyway She is trying to help user to sharing knowledge.
