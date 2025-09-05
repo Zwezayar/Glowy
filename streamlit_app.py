@@ -194,7 +194,7 @@ with col1:
             if st.session_state.chat_history:
                 display_chat()
             else:
-                st.info('👋 Hi! I\'m your skincare AI assistant "Glowy". Ask me anything about skincare, routines, or our products!')
+                st.info(WELCOME_MESSAGE)
         
         # Chat input
         user_input = st.chat_input("Ask me about skincare...")
