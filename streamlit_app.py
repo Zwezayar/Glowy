@@ -145,7 +145,7 @@ def skin_analysis_form():
             st.rerun()
 
 # Main App Layout
-st.title("🌸 SkinCare AI Assistant")
+st.title("🌸Glowy🌸 SkinCare AI Assistant")
 st.subheader("Your Personal Skincare Expert & Product Consultant")
 
 # Sidebar
@@ -247,9 +247,9 @@ with col2:
     st.markdown("---")
     
     st.header("📞 Connect With Us")
-    st.write("🔗 Facebook Page: [Visit our store](#)")
-    st.write("📱 WhatsApp: [Chat with us](#)")
-    st.write("📧 Email: skincare@example.com")
+    st.write("🔗 Facebook Page: [Visit our store](https://www.facebook.com/tmygbyingyin)")
+    st.write("📱 WhatsApp: [Chat with us](https://wa.me/959777848379)")
+    st.write("📧 Email: themoreyouglowmm@gmail.com")
 
 # Footer
 st.markdown("---")
