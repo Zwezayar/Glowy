@@ -1,26 +1,38 @@
-# ✨The More You Glow By Ingyin - Virtual Assistant "Glowy"
+# ✨ The More You Glow By Ingyin — Virtual Assistant "Glowy"
 
-A simple Ai Assistant : " Glowy "
+**Glowy** is a simple AI-powered virtual assistant designed to answer user questions based on skincare knowledge.
 
-Virtual Assistant Ai to answer the user questions base on the Skincare Knowledge 
-Glowy is under training level stage and she can be mistake or error depend on the prompt.
-Anyway She is trying to help user to sharing knowledge.
+> **Please Note:**  
+> Glowy is currently in the training stage and may occasionally make mistakes or provide incorrect information depending on the prompt. She is continuously learning and strives to assist users by sharing helpful knowledge.
 
-## Especially this is a gift for my lovely wife who support me whatever i do with my passion. THANKS! 
+---
 
+## 💖 A Special Dedication
+
+This project is especially dedicated to my wonderful wife, whose unwavering support inspires and motivates my passion for technology. Thank you!
+
+---
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://document-question-answering-template.streamlit.app/)
 
-### How to run it on your own machine
+---
 
-1. Install the requirements
+## 🚀 Getting Started
 
-   ```
-   $ pip install -r requirements.txt
-   ```
+To run Glowy on your local machine, follow these steps:
 
-2. Run the app
+### 1. Install the Requirements
 
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Launch the Application
+
+```bash
+streamlit run streamlit_app.py
+```
+
+---
+
+Feel free to contribute, provide feedback, or share your experience using Glowy!
