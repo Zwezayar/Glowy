@@ -194,7 +194,7 @@ with col1:
             if st.session_state.chat_history:
                 display_chat()
             else:
-                st.info("👋 Hi! I'm your skincare AI assistant. Ask me anything about skincare, routines, or our products!")
+                st.info("👋 Hi! I'm your skincare AI assistant "Glowy". Ask me anything about skincare, routines, or our products!")
         
         # Chat input
         user_input = st.chat_input("Ask me about skincare...")
@@ -256,7 +256,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666;'>
-    <p>🌸 Your Brand Name AI - Your trusted beauty companion</p>
+    <p>🌸 The More You Glow By Ingyin : Glowy AI 🌸 - Your trusted beauty companion</p>
     <p>For product purchases and detailed consultations, visit our Facebook page!</p>
     </div>
     """, 
