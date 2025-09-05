@@ -1,2 +1,5 @@
-streamlit
-openai
+streamlit>=1.28.0
+requests>=2.31.0
+pandas>=2.0.0
+datetime
+json5>=0.9.0
