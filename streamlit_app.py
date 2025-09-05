@@ -1,93 +1,264 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import plotly.express as px
-from transformers import pipeline
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.datasets import load_iris
+import json
+import requests
+from datetime import datetime
+import time
+import re
 
 # Set page config
-st.set_page_config(page_title="Advanced Streamlit App", layout="wide")
+st.set_page_config(
+    page_title="SkinCare AI Assistant", 
+    page_icon="🌸",
+    layout="wide"
+)
+
+# Initialize session state
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+if 'user_profile' not in st.session_state:
+    st.session_state.user_profile = {}
+
+# Skincare Knowledge Base (Replace with your NotebookLM Q&A data)
+SKINCARE_KB = {
+    "acne": {
+        "keywords": ["acne", "pimples", "breakouts", "blackheads", "whiteheads", "oily skin"],
+        "answer": "For acne-prone skin, I recommend using gentle, non-comedogenic products. Start with a mild cleanser, use salicylic acid or benzoyl peroxide treatments, and always moisturize. Our Facebook page features effective acne-fighting products that many customers love!",
+        "products": ["Gentle Foam Cleanser", "Salicylic Acid Treatment", "Oil-Free Moisturizer"]
+    },
+    "dry_skin": {
+        "keywords": ["dry skin", "flaky", "tight", "dehydrated", "moisturizer"],
+        "answer": "Dry skin needs intensive hydration. Use a cream-based cleanser, apply hydrating serums with hyaluronic acid, and use rich moisturizers. Don't forget SPF during the day!",
+        "products": ["Hydrating Cream Cleanser", "Hyaluronic Acid Serum", "Rich Night Cream"]
+    },
+    "anti_aging": {
+        "keywords": ["wrinkles", "fine lines", "anti-aging", "aging", "mature skin", "retinol"],
+        "answer": "For anti-aging, focus on retinoids, vitamin C, and SPF protection. Start slowly with retinol and always use sunscreen. Our anti-aging collection has proven results!",
+        "products": ["Vitamin C Serum", "Retinol Cream", "Anti-Aging Moisturizer"]
+    },
+    "sensitive_skin": {
+        "keywords": ["sensitive", "irritated", "redness", "burning", "stinging"],
+        "answer": "Sensitive skin needs gentle, fragrance-free products. Look for ingredients like ceramides, niacinamide, and avoid harsh actives. Patch test everything!",
+        "products": ["Gentle Cleanser", "Calming Serum", "Barrier Repair Cream"]
+    }
+}
+
+# Free AI API function (using Hugging Face Inference API)
+def get_ai_response(user_input, context=""):
+    """
+    Use Hugging Face's free inference API for natural language responses
+    You can replace this with other free APIs like Cohere, etc.
+    """
+    try:
+        # Simple keyword matching first (no API cost)
+        user_input_lower = user_input.lower()
+        
+        for category, data in SKINCARE_KB.items():
+            if any(keyword in user_input_lower for keyword in data["keywords"]):
+                return {
+                    "response": data["answer"],
+                    "products": data["products"],
+                    "category": category
+                }
+        
+        # If no direct match, create a general response
+        return {
+            "response": "I'd love to help you with your skincare concerns! Could you tell me more about your skin type or specific issues? I can recommend products from our collection.",
+            "products": [],
+            "category": "general"
+        }
+        
+    except Exception as e:
+        return {
+            "response": "I'm here to help with your skincare questions! What would you like to know about skincare routines, products, or ingredients?",
+            "products": [],
+            "category": "general"
+        }
+
+def add_to_chat(role, message, products=None):
+    """Add message to chat history"""
+    st.session_state.chat_history.append({
+        "role": role,
+        "message": message,
+        "products": products or [],
+        "timestamp": datetime.now().strftime("%H:%M")
+    })
+
+def display_chat():
+    """Display chat messages"""
+    for chat in st.session_state.chat_history:
+        if chat["role"] == "user":
+            with st.chat_message("user"):
+                st.write(f"**You** ({chat['timestamp']})")
+                st.write(chat["message"])
+        else:
+            with st.chat_message("assistant"):
+                st.write(f"**SkinCare AI** ({chat['timestamp']})")
+                st.write(chat["message"])
+                
+                if chat["products"]:
+                    st.write("**Recommended Products:**")
+                    for product in chat["products"]:
+                        st.write(f"• {product}")
+                    
+                    st.info("💫 Visit our Facebook page to see these products and more!")
+
+def skin_analysis_form():
+    """Skin analysis questionnaire"""
+    st.subheader("🔍 Skin Analysis")
+    st.write("Help me understand your skin better!")
+    
+    with st.form("skin_analysis"):
+        skin_type = st.selectbox(
+            "What's your skin type?",
+            ["Not sure", "Oily", "Dry", "Combination", "Sensitive", "Normal"]
+        )
+        
+        concerns = st.multiselect(
+            "What are your main skin concerns?",
+            ["Acne/Breakouts", "Dryness", "Fine lines/Wrinkles", "Dark spots", "Sensitivity", "Large pores", "Dullness"]
+        )
+        
+        current_routine = st.text_area("Describe your current skincare routine (optional)")
+        
+        age_range = st.selectbox(
+            "Age range",
+            ["Under 20", "20-30", "30-40", "40-50", "50+"]
+        )
+        
+        submitted = st.form_submit_button("Get Personalized Recommendations")
+        
+        if submitted:
+            # Store user profile
+            st.session_state.user_profile = {
+                "skin_type": skin_type,
+                "concerns": concerns,
+                "routine": current_routine,
+                "age_range": age_range
+            }
+            
+            # Generate personalized response
+            analysis_text = f"Based on your {skin_type.lower()} skin type and concerns about {', '.join(concerns).lower()}, here are my recommendations:"
+            
+            ai_response = get_ai_response(f"skin type {skin_type} concerns {' '.join(concerns)}")
+            
+            add_to_chat("assistant", f"{analysis_text}\n\n{ai_response['response']}", ai_response['products'])
+            st.rerun()
+
+# Main App Layout
+st.title("🌸 SkinCare AI Assistant")
+st.subheader("Your Personal Skincare Expert & Product Consultant")
 
 # Sidebar
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Data Analysis", "ML Model", "NLP"])
-
-# Home page
-if page == "Home":
-    st.title("Welcome to the Advanced Streamlit App")
-    st.write("This app demonstrates various data science and ML capabilities.")
-    st.image("https://streamlit.io/images/brand/streamlit-logo-secondary-colormark-darktext.png", width=300)
-
-# Data Analysis page
-elif page == "Data Analysis":
-    st.title("Data Analysis")
+with st.sidebar:
+    st.header("📱 About")
+    st.write("I'm your AI skincare assistant! I can help you with:")
+    st.write("• Skincare routines")
+    st.write("• Product recommendations") 
+    st.write("• Ingredient questions")
+    st.write("• Skin concerns")
     
-    # File uploader
-    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
-    if uploaded_file is not None:
-        data = pd.read_csv(uploaded_file)
-        st.write(data.head())
+    st.markdown("---")
+    
+    st.header("🛍️ Our Products")
+    st.write("Visit our Facebook page for:")
+    st.write("• Latest skincare products")
+    st.write("• Customer reviews")
+    st.write("• Special offers")
+    st.write("• Skincare tips")
+    
+    if st.button("📋 Take Skin Analysis"):
+        st.session_state.show_analysis = True
+    
+    if st.button("🗑️ Clear Chat"):
+        st.session_state.chat_history = []
+        st.rerun()
+
+# Main content area
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.header("💬 Chat with AI Assistant")
+    
+    # Show skin analysis form if requested
+    if st.session_state.get('show_analysis', False):
+        skin_analysis_form()
+        if st.button("Back to Chat"):
+            st.session_state.show_analysis = False
+            st.rerun()
+    else:
+        # Chat interface
+        chat_container = st.container()
         
-        # Basic stats
-        st.write("Basic Statistics:")
-        st.write(data.describe())
+        with chat_container:
+            # Display existing chat
+            if st.session_state.chat_history:
+                display_chat()
+            else:
+                st.info("👋 Hi! I'm your skincare AI assistant. Ask me anything about skincare, routines, or our products!")
         
-        # Plotting
-        st.subheader("Data Visualization")
-        fig_col1, fig_col2 = st.columns(2)
-        with fig_col1:
-            st.pyplot(data.hist(figsize=(10, 10)))
-        with fig_col2:
-            fig = px.scatter(data, x=data.columns[0], y=data.columns[1])
-            st.plotly_chart(fig)
+        # Chat input
+        user_input = st.chat_input("Ask me about skincare...")
+        
+        if user_input:
+            # Add user message
+            add_to_chat("user", user_input)
+            
+            # Get AI response
+            with st.spinner("Thinking..."):
+                ai_response = get_ai_response(user_input)
+            
+            # Add AI response
+            add_to_chat("assistant", ai_response['response'], ai_response['products'])
+            
+            st.rerun()
 
-# ML Model page
-elif page == "ML Model":
-    st.title("Machine Learning Model")
+with col2:
+    st.header("🎯 Quick Actions")
     
-    # Sample dataset
-    iris = load_iris()
-    X, y = iris.data, iris.target
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Quick question buttons
+    if st.button("What's my skin type?"):
+        add_to_chat("user", "What's my skin type?")
+        response = get_ai_response("skin type help")
+        add_to_chat("assistant", "To determine your skin type, consider: How does your skin feel after cleansing? Oily skin feels greasy, dry skin feels tight, combination has both, and sensitive skin gets irritated easily. Try our skin analysis for personalized recommendations!")
+        st.rerun()
     
-    # Model training
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+    if st.button("Morning routine help"):
+        add_to_chat("user", "What should my morning routine be?")
+        add_to_chat("assistant", "A basic morning routine: 1) Gentle cleanser 2) Toner (optional) 3) Serum (vitamin C is great) 4) Moisturizer 5) SPF (most important!). Adjust based on your skin type and concerns.")
+        st.rerun()
     
-    # Model evaluation
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    st.write(f"Model Accuracy: {accuracy:.2f}")
+    if st.button("Product recommendations"):
+        add_to_chat("user", "Can you recommend products?")
+        add_to_chat("assistant", "I'd love to help! What's your skin type and main concerns? Check our Facebook page for our complete product range with customer reviews and detailed descriptions.")
+        st.rerun()
     
-    # Feature importance
-    feature_importance = pd.DataFrame({
-        'feature': iris.feature_names,
-        'importance': model.feature_importances_
-    }).sort_values('importance', ascending=False)
+    st.markdown("---")
     
-    st.bar_chart(feature_importance.set_index('feature'))
-
-# NLP page
-elif page == "NLP":
-    st.title("Natural Language Processing")
+    st.header("🌟 User Profile")
+    if st.session_state.user_profile:
+        profile = st.session_state.user_profile
+        st.write(f"**Skin Type:** {profile.get('skin_type', 'Not set')}")
+        st.write(f"**Age Range:** {profile.get('age_range', 'Not set')}")
+        if profile.get('concerns'):
+            st.write(f"**Concerns:** {', '.join(profile['concerns'])}")
+    else:
+        st.info("Take the skin analysis to get personalized recommendations!")
     
-    # Load NLP model
-    @st.cache(allow_output_mutation=True)
-    def load_nlp_model():
-        return pipeline("sentiment-analysis")
+    st.markdown("---")
     
-    nlp_model = load_nlp_model()
-    
-    # Text input
-    text_input = st.text_area("Enter text for sentiment analysis:")
-    if text_input:
-        result = nlp_model(text_input)[0]
-        st.write(f"Sentiment: {result['label']}")
-        st.write(f"Confidence: {result['score']:.4f}")
+    st.header("📞 Connect With Us")
+    st.write("🔗 Facebook Page: [Visit our store](#)")
+    st.write("📱 WhatsApp: [Chat with us](#)")
+    st.write("📧 Email: skincare@example.com")
 
 # Footer
-st.sidebar.markdown("---")
-st.sidebar.markdown("Created with Streamlit")
+st.markdown("---")
+st.markdown(
+    """
+    <div style='text-align: center; color: #666;'>
+    <p>🌸 SkinCare AI Assistant - Your trusted skincare companion</p>
+    <p>For product purchases and detailed consultations, visit our Facebook page!</p>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
