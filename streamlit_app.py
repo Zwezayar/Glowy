@@ -256,7 +256,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666;'>
-    <p>🌸 SkinCare AI Assistant - Your trusted skincare companion</p>
+    <p>🌸 Your Brand Name AI - Your trusted beauty companion</p>
     <p>For product purchases and detailed consultations, visit our Facebook page!</p>
     </div>
     """, 
