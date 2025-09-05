@@ -148,6 +148,8 @@ def skin_analysis_form():
 st.title("🌸Glowy🌸 SkinCare AI Assistant")
 st.subheader("Your Personal Skincare Expert & Product Consultant")
 
+WELCOME_MESSAGE = "Welcome! Ask me anything about skincare routines, products, or ingredients. You can also take our skin analysis for personalized recommendations."
+
 # Sidebar
 with st.sidebar:
     st.header("📱 About")
