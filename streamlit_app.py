@@ -7,7 +7,7 @@ import re
 
 # Set page config
 st.set_page_config(
-    page_title="SkinCare AI Assistant", 
+    page_title="The More You Glow By Ingyin - Skincare AI Assistant", 
     page_icon="🌸",
     layout="wide"
 )
@@ -92,7 +92,7 @@ def display_chat():
                 st.write(chat["message"])
         else:
             with st.chat_message("assistant"):
-                st.write(f"**SkinCare AI** ({chat['timestamp']})")
+                st.write(f"**Glowy** ({chat['timestamp']})")
                 st.write(chat["message"])
                 
                 if chat["products"]:
