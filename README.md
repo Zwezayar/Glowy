@@ -9,7 +9,7 @@
 
 ## 💖 A Special Dedication
 
-This project is especially dedicated to my wonderful wife, whose unwavering support inspires and motivates my passion for technology. Thank you!
+This project is especially dedicated to my lovely wife, whose unwavering support inspires and motivates my passion for technology. Thank you!
 
 ---
 
