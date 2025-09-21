@@ -1,4 +1,4 @@
-# ✨ The More You Glow By Ingyin — Virtual Assistant "Glowy"
+# 🌸 The More You Glow By Ingyin — Virtual Assistant "Glowy"
 
 **Glowy** is a simple AI-powered virtual assistant designed to answer for user questions based on skincare knowledge.
 
