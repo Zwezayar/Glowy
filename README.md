@@ -13,10 +13,6 @@ This project is especially dedicated to my lovely wife, whose unwavering support
 
 ---
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://document-question-answering-template.streamlit.app/)
-
----
-
 ## 🚀 Getting Started
 
 To run Glowy on your local machine, follow these steps:
